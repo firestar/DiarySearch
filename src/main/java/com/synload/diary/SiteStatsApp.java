@@ -13,6 +13,7 @@ import com.synload.framework.SynloadFramework;
 import com.synload.framework.modules.ModuleClass;
 import com.synload.framework.modules.annotations.Module;
 import com.synload.talksystem.Client;
+import com.synload.talksystem.ConnectionTypeDocument;
 import com.synload.talksystem.info.InformationDocument;
 import com.synload.talksystem.info.ServerTalkInformationEvent;
 
@@ -28,6 +29,7 @@ public class SiteStatsApp extends ModuleClass{
             Log.info("Initializing player thread", SiteStatsApp.class);
             SiteStatsApp.index = new Diary();
 			connection = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
+            connection.write(new ConnectionTypeDocument());
 			(new Thread(new IndexDiaryAdder())).start();
 			Log.info("Done initializing", SiteStatsApp.class);
 		}catch (Exception e){
