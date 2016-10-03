@@ -25,9 +25,9 @@ public class SiteStatsApp extends ModuleClass{
 	public void initialize(){
 		mainSQL = SynloadFramework.sql;
 		try {
-			connection = Client.createConnection("127.0.0.1", 8001, false, "mcbanspasser");
-			Log.info("Initializing player thread", SiteStatsApp.class);
-			SiteStatsApp.index = new Diary();
+            Log.info("Initializing player thread", SiteStatsApp.class);
+            SiteStatsApp.index = new Diary();
+			connection = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
 			(new Thread(new IndexDiaryAdder())).start();
 			Log.info("Done initializing", SiteStatsApp.class);
 		}catch (Exception e){
@@ -50,7 +50,7 @@ public class SiteStatsApp extends ModuleClass{
                     String[] o = queue.pop().split("&");
                     SiteStatsApp.index.addEntry(o[1], new Object[]{o[0]});
                     if (SiteStatsApp.index.getSize() % 1000 == 0) {
-                        System.out.println("player diary size: " + SiteStatsApp.index.getSize());
+                        System.out.println("index diary size: " + SiteStatsApp.index.getSize());
                     }
                 }else{
                     try {
@@ -65,6 +65,7 @@ public class SiteStatsApp extends ModuleClass{
     public static boolean rec = false;
 	@Event(description = "get data from master", enabled = true, name = "IncomingData")
 	public void incomingData(ServerTalkInformationEvent stm){
+        System.out.println("pop");
 		if(stm.getiD().getType().equals("store")){
             if(!rec){
                 System.out.println("received: "+(String)stm.getiD().getObjects().get("data"));
