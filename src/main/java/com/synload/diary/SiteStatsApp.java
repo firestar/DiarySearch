@@ -22,6 +22,7 @@ public class SiteStatsApp extends ModuleClass{
 	public static Connection mainSQL;
 	public static Diary index;
 	public static Client connection;
+    public static Client responder;
 	@Override
 	public void initialize(){
 		mainSQL = SynloadFramework.sql;
@@ -29,6 +30,7 @@ public class SiteStatsApp extends ModuleClass{
             Log.info("Initializing player thread", SiteStatsApp.class);
             SiteStatsApp.index = new Diary();
 			connection = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
+            responder = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
             connection.write(new ConnectionTypeDocument());
 			(new Thread(new IndexDiaryAdder())).start();
 			Log.info("Done initializing", SiteStatsApp.class);
@@ -64,39 +66,49 @@ public class SiteStatsApp extends ModuleClass{
 			}
 		}
 	}
+    public class ExecuteAction implements Runnable{
+        public ServerTalkInformationEvent stm;
+        public ExecuteAction(ServerTalkInformationEvent stm){
+            this.stm = stm;
+        }
+        @Override
+        public void run() {
+            System.out.println("pop");
+            if(stm.getiD().getType().equals("store")){
+                if(!rec){
+                    System.out.println("received: "+(String)stm.getiD().getObjects().get("data"));
+                    rec=true;
+                }
+                queue.add((String)stm.getiD().getObjects().get("data"));
+            }else if(stm.getiD().getType().equals("end")){
+                trigger = false;
+                System.out.println("END");
+            }else if(stm.getiD().getType().equals("search")){
+                String ids = "";
+                List<WordChain> wordChains = index.search((String)stm.getiD().getObjects().get("term"));
+                System.out.println("looked up entry "+(String)stm.getiD().getObjects().get("term"));
+                for(WordChain wc: wordChains){
+                    if(!ids.equals("")){
+                        ids+=", ";
+                    }
+                    if(wc !=null && wc.getData()!=null) {
+                        ids += (String) wc.getData()[0];
+                    }
+                }
+                InformationDocument id = new InformationDocument("result", stm.getiD().getChain());
+                id.getObjects().put("data", ids);
+                try {
+                    responder.write(id);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     public static boolean rec = false;
 	@Event(description = "get data from master", enabled = true, name = "IncomingData")
 	public void incomingData(ServerTalkInformationEvent stm){
-        System.out.println("pop");
-		if(stm.getiD().getType().equals("store")){
-            if(!rec){
-                System.out.println("received: "+(String)stm.getiD().getObjects().get("data"));
-                rec=true;
-            }
-			queue.add((String)stm.getiD().getObjects().get("data"));
-		}else if(stm.getiD().getType().equals("end")){
-            trigger = false;
-            System.out.println("END");
-		}else if(stm.getiD().getType().equals("search")){
-            String ids = "";
-            List<WordChain> wordChains = index.search((String)stm.getiD().getObjects().get("term"));
-            System.out.println("looked up entry "+(String)stm.getiD().getObjects().get("term"));
-            for(WordChain wc: wordChains){
-                if(!ids.equals("")){
-                    ids+=", ";
-                }
-                if(wc !=null && wc.getData()!=null) {
-                    ids += (String) wc.getData()[0];
-                }
-            }
-            InformationDocument id = new InformationDocument("result", stm.getiD().getChain());
-            id.getObjects().put("data", ids);
-            try {
-                stm.getClient().write(id);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
+        (new Thread(new ExecuteAction(stm))).start();
 	}
 
 }
