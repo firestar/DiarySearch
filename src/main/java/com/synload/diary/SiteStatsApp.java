@@ -100,6 +100,8 @@ public class SiteStatsApp extends ModuleClass{
             }catch (Exception e){
                 e.printStackTrace();
             }
+        }else{
+            System.out.println("unknown "+stm.getiD().getType());
         }
 	}
 
