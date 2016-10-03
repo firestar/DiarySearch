@@ -73,7 +73,6 @@ public class SiteStatsApp extends ModuleClass{
         }
         @Override
         public void run() {
-            System.out.println("pop");
             if(stm.getiD().getType().equals("store")){
                 if(!rec){
                     System.out.println("received: "+(String)stm.getiD().getObjects().get("data"));
