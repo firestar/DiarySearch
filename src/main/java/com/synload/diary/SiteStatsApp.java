@@ -33,7 +33,7 @@ public class SiteStatsApp extends ModuleClass{
 			connection = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
             responder = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
             searchStream = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
-            searchStream.write(new InformationDocument("resultStream", UUID.randomUUID()));
+            searchStream.write(new InformationDocument("searchStream", UUID.randomUUID()));
             connection.write(new ConnectionTypeDocument());
 			(new Thread(new IndexDiaryAdder())).start();
 			Log.info("Done initializing", SiteStatsApp.class);
