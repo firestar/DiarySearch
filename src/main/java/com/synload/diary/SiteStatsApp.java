@@ -23,6 +23,7 @@ public class SiteStatsApp extends ModuleClass{
 	public static Diary index;
 	public static Client connection;
     public static Client responder;
+    public static Client searchStream;
 	@Override
 	public void initialize(){
 		mainSQL = SynloadFramework.sql;
@@ -31,6 +32,8 @@ public class SiteStatsApp extends ModuleClass{
             SiteStatsApp.index = new Diary();
 			connection = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
             responder = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
+            searchStream = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
+            searchStream.write(new InformationDocument("resultStream", UUID.randomUUID()));
             connection.write(new ConnectionTypeDocument());
 			(new Thread(new IndexDiaryAdder())).start();
 			Log.info("Done initializing", SiteStatsApp.class);
