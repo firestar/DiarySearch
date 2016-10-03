@@ -62,12 +62,18 @@ public class SiteStatsApp extends ModuleClass{
 			}
 		}
 	}
+    public static boolean rec = false;
 	@Event(description = "get data from master", enabled = true, name = "IncomingData")
 	public void incomingData(ServerTalkInformationEvent stm){
 		if(stm.getiD().getType().equals("store")){
+            if(!rec){
+                System.out.println("received: "+(String)stm.getiD().getObjects().get("data"));
+                rec=true;
+            }
 			queue.add((String)stm.getiD().getObjects().get("data"));
 		}else if(stm.getiD().getType().equals("end")){
             trigger = false;
+            System.out.println("END");
 		}else if(stm.getiD().getType().equals("search")){
             String ids = "";
             List<WordChain> wordChains = index.search((String)stm.getiD().getObjects().get("term"));
