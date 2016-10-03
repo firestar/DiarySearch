@@ -46,11 +46,18 @@ public class SiteStatsApp extends ModuleClass{
 		@Override
 		public void run() {
 			while(trigger || queue.size()>0) {
-				String[] o = queue.pop().split("&");
-				SiteStatsApp.index.addEntry(o[1], new Object[]{o[0]});
-				if (SiteStatsApp.index.getSize() % 1000 == 0) {
-					System.out.println("player diary size: " + SiteStatsApp.index.getSize());
-				}
+                if(queue.size()>0) {
+                    String[] o = queue.pop().split("&");
+                    SiteStatsApp.index.addEntry(o[1], new Object[]{o[0]});
+                    if (SiteStatsApp.index.getSize() % 1000 == 0) {
+                        System.out.println("player diary size: " + SiteStatsApp.index.getSize());
+                    }
+                }
+                try {
+                    Thread.sleep(2L);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 			}
 		}
 	}
