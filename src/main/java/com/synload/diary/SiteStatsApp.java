@@ -86,9 +86,9 @@ public class SiteStatsApp extends ModuleClass{
                 trigger = false;
                 System.out.println("END");
             }else if(stm.getiD().getType().equals("search")){
+                System.out.println("looked up entry "+(String)stm.getiD().getObjects().get("term"));
                 String ids = "";
                 List<WordChain> wordChains = index.search((String)stm.getiD().getObjects().get("term"));
-                System.out.println("looked up entry "+(String)stm.getiD().getObjects().get("term"));
                 for(WordChain wc: wordChains){
                     if(!ids.equals("")){
                         ids+=", ";
