@@ -52,11 +52,12 @@ public class SiteStatsApp extends ModuleClass{
                     if (SiteStatsApp.index.getSize() % 1000 == 0) {
                         System.out.println("player diary size: " + SiteStatsApp.index.getSize());
                     }
-                }
-                try {
-                    Thread.sleep(2L);
-                }catch (Exception e){
-                    e.printStackTrace();
+                }else{
+                    try {
+                        Thread.sleep(2L);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
 			}
 		}
