@@ -57,7 +57,7 @@ public class SiteStatsApp extends ModuleClass{
                     String[] o = queue.pop().split("&");
                     SiteStatsApp.index.addEntry(o[1], new Object[]{o[0]});
                     if (SiteStatsApp.index.getSize() % 1000 == 0) {
-                        System.out.println("index diary size: " + SiteStatsApp.index.getSize());
+                        //System.out.println("index diary size: " + SiteStatsApp.index.getSize());
                     }
                 }else{
                     try {
