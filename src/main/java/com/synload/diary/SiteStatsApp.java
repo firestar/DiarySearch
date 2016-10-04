@@ -30,9 +30,9 @@ public class SiteStatsApp extends ModuleClass{
 		try {
             Log.info("Initializing player thread", SiteStatsApp.class);
             SiteStatsApp.index = new Diary();
-			connection = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
-            responder = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
-            searchStream = Client.createConnection( "127.0.0.1", 8001, false, "mcbanspasser", true);
+			connection = Client.createConnection( "104.198.17.20", 8001, false, "mcbanspasser", true);
+            responder = Client.createConnection( "104.198.17.20", 8001, false, "mcbanspasser", true);
+            searchStream = Client.createConnection( "104.198.17.20", 8001, false, "mcbanspasser", true);
             searchStream.write(new InformationDocument("searchStream", UUID.randomUUID()));
             connection.write(new ConnectionTypeDocument());
 			(new Thread(new IndexDiaryAdder())).start();
@@ -57,7 +57,7 @@ public class SiteStatsApp extends ModuleClass{
                     String[] o = queue.pop().split("&");
                     SiteStatsApp.index.addEntry(o[1], new Object[]{o[0]});
                     if (SiteStatsApp.index.getSize() % 1000 == 0) {
-                        //System.out.println("index diary size: " + SiteStatsApp.index.getSize());
+                        System.out.println("index diary size: " + SiteStatsApp.index.getSize());
                     }
                 }else{
                     try {
