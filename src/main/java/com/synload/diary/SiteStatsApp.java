@@ -43,7 +43,9 @@ public class SiteStatsApp extends ModuleClass{
             String key = "";
             if ((new File(configFile)).exists()) {
                 prop.load(new FileInputStream(configFile));
-                prop.getProperty("key")
+                key = prop.getProperty("key");
+                address = prop.getProperty("address","127.0.0.1");
+                port = Integer.valueOf(prop.getProperty("port"));
             } else {
                 InputStream is = SiteStatsApp.class.getClassLoader().getResourceAsStream("diary.ini");
                 FileOutputStream os = new FileOutputStream(new File(configFile));
