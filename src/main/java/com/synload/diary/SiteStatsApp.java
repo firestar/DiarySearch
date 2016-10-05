@@ -1,7 +1,12 @@
 package com.synload.diary;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.List;
+import java.util.Properties;
 import java.util.Stack;
 import java.util.UUID;
 
@@ -16,6 +21,7 @@ import com.synload.talksystem.Client;
 import com.synload.talksystem.ConnectionTypeDocument;
 import com.synload.talksystem.info.InformationDocument;
 import com.synload.talksystem.info.ServerTalkInformationEvent;
+import org.apache.commons.io.IOUtils;
 
 @Module(name="Site Statistics Plugin", author="Nathaniel Davidson", version="0.1", depend = {}, log= Module.LogLevel.INFO)
 public class SiteStatsApp extends ModuleClass{
@@ -30,9 +36,25 @@ public class SiteStatsApp extends ModuleClass{
 		try {
             Log.info("Initializing player thread", SiteStatsApp.class);
             SiteStatsApp.index = new Diary();
-			connection = Client.createConnection( "104.198.17.20", 8001, false, "mcbanspasser", true);
-            responder = Client.createConnection( "104.198.17.20", 8001, false, "mcbanspasser", true);
-            searchStream = Client.createConnection( "104.198.17.20", 8001, false, "mcbanspasser", true);
+            String configFile = SynloadFramework.defaultPath+"diary.ini";
+            Properties prop = new Properties();
+            String address="";
+            int port = 0;
+            String key = "";
+            if ((new File(configFile)).exists()) {
+                prop.load(new FileInputStream(configFile));
+                prop.getProperty("key")
+            } else {
+                InputStream is = SiteStatsApp.class.getClassLoader().getResourceAsStream("diary.ini");
+                FileOutputStream os = new FileOutputStream(new File(configFile));
+                IOUtils.copy(is, os);
+                os.close();
+                is.close();
+                System.exit(0);
+            }
+			connection = Client.createConnection( address, port, false, key, true);
+            responder = Client.createConnection( address, port, false, key, true);
+            searchStream = Client.createConnection( address, port, false, key, true);
             searchStream.write(new InformationDocument("searchStream", UUID.randomUUID()));
             connection.write(new ConnectionTypeDocument());
 			(new Thread(new IndexDiaryAdder())).start();
